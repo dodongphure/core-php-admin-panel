@@ -31,13 +31,14 @@ if (!$order_dir) {
 
 // Get DB instance. i.e instance of MYSQLiDB Library
 $db = getDbInstance();
-$select = array('id', 'f_name', 'l_name', 'gender', 'phone', 'created_at', 'updated_at');
+$select = array('id', 'text1', 'text2', 'text3');
 
 // Start building query according to input parameters
 // If search string
 if ($search_str) {
-	$db->where('f_name', '%' . $search_str . '%', 'like');
-	$db->orwhere('l_name', '%' . $search_str . '%', 'like');
+	$db->where('text1', '%' . $search_str . '%', 'like');
+    $db->orwhere('text2', '%' . $search_str . '%', 'like');
+    $db->orwhere('text3', '%' . $search_str . '%', 'like');
 }
 // If order direction option selected
 if ($order_dir) {
@@ -48,7 +49,7 @@ if ($order_dir) {
 $db->pageLimit = $pagelimit;
 
 // Get result of the query
-$rows = $db->arraybuilder()->paginate('customers', $page, $select);
+$rows = $db->arraybuilder()->paginate('popup_notification', $page, $select);
 $total_pages = $db->totalPages;
 ?>
 <?php include BASE_PATH . '/includes/header.php'; ?>
@@ -56,11 +57,11 @@ $total_pages = $db->totalPages;
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-6">
-            <h1 class="page-header">Customers</h1>
+            <h1 class="page-header">Notifications</h1>
         </div>
         <div class="col-lg-6">
             <div class="page-action-links text-right">
-                <a href="add_customer.php?operation=create" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add new</a>
+                <a href="add_notification.php?operation=create" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add new</a>
             </div>
         </div>
     </div>
@@ -71,27 +72,6 @@ $total_pages = $db->totalPages;
         <form class="form form-inline" action="">
             <label for="input_search">Search</label>
             <input type="text" class="form-control" id="input_search" name="search_str" value="<?php echo htmlspecialchars($search_str, ENT_QUOTES, 'UTF-8'); ?>">
-            <label for="input_order">Order By</label>
-            <select name="order_by" class="form-control">
-                <?php
-foreach ($costumers->setOrderingValues() as $opt_value => $opt_name):
-	($order_by === $opt_value) ? $selected = 'selected' : $selected = '';
-	echo ' <option value="' . $opt_value . '" ' . $selected . '>' . $opt_name . '</option>';
-endforeach;
-?>
-            </select>
-            <select name="order_dir" class="form-control" id="input_order">
-                <option value="Asc" <?php
-if ($order_dir == 'Asc') {
-	echo 'selected';
-}
-?> >Asc</option>
-                <option value="Desc" <?php
-if ($order_dir == 'Desc') {
-	echo 'selected';
-}
-?>>Desc</option>
-            </select>
             <input type="submit" value="Go" class="btn btn-primary">
         </form>
     </div>
@@ -103,9 +83,9 @@ if ($order_dir == 'Desc') {
         <thead>
             <tr>
                 <th width="5%">ID</th>
-                <th width="45%">Name</th>
-                <th width="20%">Gender</th>
-                <th width="20%">Phone</th>
+                <th width="28%">Text 1</th>
+                <th width="28%">Text 2</th>
+                <th width="28%">Text 3</th>
                 <th width="10%">Actions</th>
             </tr>
         </thead>
@@ -113,18 +93,18 @@ if ($order_dir == 'Desc') {
             <?php foreach ($rows as $row): ?>
             <tr>
                 <td><?php echo $row['id']; ?></td>
-                <td><?php echo htmlspecialchars($row['f_name'] . ' ' . $row['l_name']); ?></td>
-                <td><?php echo htmlspecialchars($row['gender']); ?></td>
-                <td><?php echo htmlspecialchars($row['phone']); ?></td>
+                <td><?php echo htmlspecialchars($row['text1']); ?></td>
+                <td><?php echo htmlspecialchars($row['text2']); ?></td>
+                <td><?php echo htmlspecialchars($row['text3']); ?></td>
                 <td>
-                    <a href="edit_customer.php?customer_id=<?php echo $row['id']; ?>&operation=edit" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="edit_notification.php?notification_id=<?php echo $row['id']; ?>&operation=edit" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i></a>
                     <a href="#" class="btn btn-danger delete_btn" data-toggle="modal" data-target="#confirm-delete-<?php echo $row['id']; ?>"><i class="glyphicon glyphicon-trash"></i></a>
                 </td>
             </tr>
             <!-- Delete Confirmation Modal -->
             <div class="modal fade" id="confirm-delete-<?php echo $row['id']; ?>" role="dialog">
                 <div class="modal-dialog">
-                    <form action="delete_customer.php" method="POST">
+                    <form action="delete_notification.php" method="POST">
                         <!-- Modal content -->
                         <div class="modal-content">
                             <div class="modal-header">
@@ -151,7 +131,7 @@ if ($order_dir == 'Desc') {
 
     <!-- Pagination -->
     <div class="text-center">
-    	<?php echo paginationLinks($page, $total_pages, 'customers.php'); ?>
+    	<?php echo paginationLinks($page, $total_pages, 'notifications.php'); ?>
     </div>
     <!-- //Pagination -->
 </div>

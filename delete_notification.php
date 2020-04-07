@@ -8,26 +8,26 @@ if ($del_id && $_SERVER['REQUEST_METHOD'] == 'POST')
 
 	if($_SESSION['admin_type']!='super'){
 		$_SESSION['failure'] = "You don't have permission to perform this action";
-    	header('location: customers.php');
+    	header('location: notifications.php');
         exit;
 
 	}
-    $customer_id = $del_id;
+    $notification_id = $del_id;
 
     $db = getDbInstance();
-    $db->where('id', $customer_id);
-    $status = $db->delete('customers');
+    $db->where('id', $notification_id);
+    $status = $db->delete('popup_notification');
     
     if ($status) 
     {
-        $_SESSION['info'] = "Customer deleted successfully!";
-        header('location: customers.php');
+        $_SESSION['info'] = "Notification deleted successfully!";
+        header('location: notifications.php');
         exit;
     }
     else
     {
-    	$_SESSION['failure'] = "Unable to delete customer";
-    	header('location: customers.php');
+    	$_SESSION['failure'] = "Unable to delete notification";
+    	header('location: notifications.php');
         exit;
 
     }
